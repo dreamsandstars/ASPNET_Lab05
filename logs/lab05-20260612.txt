@@ -1,0 +1,26 @@
+2026-06-12 23:01:13.602 +07:00 [INF] User profile is available. Using '/home/ho-minh-quan/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2026-06-12 23:01:13.692 +07:00 [INF] Now listening on: http://localhost:5256
+2026-06-12 23:01:13.693 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-12 23:01:13.693 +07:00 [INF] Hosting environment: Development
+2026-06-12 23:01:13.693 +07:00 [INF] Content root path: /home/ho-minh-quan/Documents/ASPNET-Lab05
+2026-06-12 23:01:38.787 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5256/health/live - null null
+2026-06-12 23:01:38.793 +07:00 [WRN] Failed to determine the https port for redirect.
+2026-06-12 23:01:38.813 +07:00 [INF] Executing endpoint 'Health checks'
+2026-06-12 23:01:38.817 +07:00 [INF] Executed endpoint 'Health checks'
+2026-06-12 23:01:38.819 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5256/health/live - 200 null text/plain 32.5073ms
+2026-06-12 23:01:38.825 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5256/health/ready - null null
+2026-06-12 23:01:38.827 +07:00 [INF] Executing endpoint 'Health checks'
+2026-06-12 23:01:39.262 +07:00 [INF] Executed endpoint 'Health checks'
+2026-06-12 23:01:39.263 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5256/health/ready - 200 null text/plain 438.937ms
+2026-06-12 23:01:49.380 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5256/api/test-error - null null
+2026-06-12 23:01:49.381 +07:00 [INF] Executing endpoint 'HTTP: GET /api/test-error'
+2026-06-12 23:01:49.381 +07:00 [INF] Executed endpoint 'HTTP: GET /api/test-error'
+2026-06-12 23:01:49.383 +07:00 [ERR] An unhandled exception occurred during request processing.
+System.Exception: Đây là lỗi thử nghiệm!
+   at Program.<>c.<<Main>$>b__0_2() in /home/ho-minh-quan/Documents/ASPNET-Lab05/Program.cs:line 111
+   at lambda_method2(Closure, Object, HttpContext)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__1>d.MoveNext() in /home/ho-minh-quan/Documents/ASPNET-Lab05/Program.cs:line 63
+2026-06-12 23:01:49.420 +07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5256/api/test-error - 500 null application/json; charset=utf-8 40.0108ms
