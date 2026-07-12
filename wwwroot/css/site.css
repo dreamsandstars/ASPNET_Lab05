@@ -1,0 +1,766 @@
+/* ============================================================
+   STARBUCKS OFFICIAL DESIGN SYSTEM SPECIFICATION
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Kalam:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+    /* Fonts */
+    --font-sans: 'Inter', "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-serif: 'Lora', "Iowan Old Style", Georgia, serif;
+    --font-script: 'Kalam', "Comic Sans MS", cursive;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Primary Colors */
+    --sb-green: #006241;       /* Historic brand green (headings, rewards page primary, brand signals) */
+    --sb-accent: #00754A;      /* Bright green (primary filled-CTA background, Frap floating button fill) */
+    --sb-house-green: #1E3932;  /* Deep dark green (footer, headers, feature-band backgrounds) */
+    --sb-uplift: #2b5148;      /* Mid-dark green */
+    --sb-light-green: #d4e9e2;  /* Pale mint wash (form validation tint, utility backgrounds) */
+
+    /* Secondary & Accent Colors */
+    --sb-gold: #cba258;        /* Gold (reserved exclusively for rewards/status, not general accent) */
+    --sb-gold-light: #dfc49d;  /* Softer gold wash */
+    --sb-gold-lightest: #faf6ee; /* Cream-gold partnership wash */
+
+    /* Surface & Canvas Colors */
+    --sb-white: #ffffff;       /* Cards & modal surfaces */
+    --sb-cool-gray: #f9f9f9;   /* Dropdown menu background, utility wraps */
+    --sb-canvas: #f2f0eb;      /* Primary page canvas (neutral warm cream) */
+    --sb-ceramic: #edebe9;     /* Separator cream, soft page sections */
+    --sb-black: #000000;       /* High-contrast ink (dark headers, special join strips) */
+
+    /* Text Colors */
+    --sb-text-black: rgba(0, 0, 0, 0.87);     /* Headings and body on light backgrounds */
+    --sb-text-black-soft: rgba(0, 0, 0, 0.58);/* Secondary & metadata text on light backgrounds */
+    --sb-text-white: rgba(255, 255, 255, 1);  /* Primary text on dark green surfaces */
+    --sb-text-white-soft: rgba(255, 255, 255, 0.70); /* Secondary text on dark green surfaces */
+    --sb-rewards-text: #33433d;                /* Muted slate-green for Rewards content blocks */
+
+    /* Semantic States */
+    --color-danger: #c82014;
+    --color-danger-bg: rgba(200, 32, 20, 0.05); /* Invalid field tint */
+    --color-success: #006241;
+    --color-success-bg: rgba(212, 233, 226, 0.33); /* Valid field tint */
+    --color-warning: #fbbc05;
+    --color-warning-bg: #fffbe6;
+    --color-info-bg: #e6f7ff;
+    --color-info: #0050b3;
+
+    /* Layout Spacing Constants */
+    --space-1: 0.4rem;
+    --space-2: 0.8rem;
+    --space-3: 1.6rem; /* 16px - Base gutter */
+    --space-4: 2.4rem;
+    --space-5: 3.2rem;
+    --space-6: 4.0rem;
+    --space-7: 4.8rem;
+    --space-8: 5.6rem;
+    --space-9: 6.4rem;
+
+    /* Border Radii */
+    --card-radius: 12px;
+    --button-radius: 50px; /* Full pill button universal */
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-full: 50px;
+
+    /* Shadows & Elevations */
+    --shadow-card: 0px 0px 0.5px 0px rgba(0,0,0,0.14), 0px 1px 1px 0px rgba(0,0,0,0.24);
+    --shadow-nav: 0 1px 3px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.06), 0 0 2px rgba(0,0,0,0.07);
+    --shadow-frap-base: 0 0 6px rgba(0,0,0,0.24);
+    --shadow-frap-ambient: 0 8px 12px rgba(0,0,0,0.14);
+
+    /* Transitions */
+    --transition-btn-active: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base resets & spacing setup */
+html {
+    font-size: 62.5%; /* 1rem = 10px */
+    scrollbar-gutter: stable;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--sb-canvas) !important;
+    color: var(--sb-text-black) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 1.6rem !important; /* 16px default */
+    line-height: 1.5 !important;
+    letter-spacing: -0.01em !important; /* Tight tracking is characteristic */
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Typography Voice */
+h1, h2, h3, h4, .serif-title {
+    font-family: var(--font-sans) !important;
+    letter-spacing: -0.01em !important;
+}
+
+h1 {
+    font-size: 2.4rem !important; /* H1 and H2 share 24px */
+    font-weight: 600 !important;
+    color: var(--sb-green) !important;
+    line-height: 1.5 !important;
+}
+
+h2 {
+    font-size: 2.4rem !important; /* H1 and H2 share 24px */
+    font-weight: 400 !important; /* Weight shifts carry hierarchy, not size shifts */
+    color: var(--sb-text-black) !important;
+    line-height: 1.5 !important;
+}
+
+h3, .coffee-title {
+    font-family: var(--font-serif) !important; /* Specific editorial headlines use serif */
+    font-size: 2.0rem !important;
+    font-weight: 700 !important;
+    color: var(--sb-house-green) !important;
+    line-height: 1.4 !important;
+}
+
+.script-font {
+    font-family: var(--font-script) !important;
+}
+
+/* Spacing layouts */
+.container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding-right: var(--space-4) !important;
+    padding-left: var(--space-4) !important;
+}
+
+@media (max-width: 767px) {
+    .container {
+        padding-right: var(--space-3) !important;
+        padding-left: var(--space-3) !important;
+    }
+}
+
+.site-header {
+    background-color: var(--sb-house-green) !important; /* Dark green footer/header */
+    height: 6.4rem !important; /* Thinner desktop height */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-nav) !important;
+    display: flex;
+    align-items: center;
+    border-bottom: none !important;
+}
+
+@media (max-width: 767px) {
+    .site-header {
+        height: 6.0rem !important;
+    }
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.brand a {
+    color: var(--sb-white) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.brand a:hover {
+    color: var(--sb-light-green) !important;
+}
+
+.main-nav {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+}
+
+.main-nav a {
+    color: var(--sb-text-white-soft) !important;
+    font-weight: 600;
+    font-size: 1.4rem;
+    padding: 8px 16px;
+    border-radius: var(--button-radius);
+    transition: var(--transition-smooth);
+    text-decoration: none;
+}
+
+.main-nav a:hover {
+    color: var(--sb-white) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.main-nav a.active {
+    background-color: var(--sb-white) !important;
+    color: var(--sb-accent) !important;
+}
+
+/* Main Content Wrapper */
+.main-content {
+    padding: 1.5rem 0 !important;
+    flex: 1;
+}
+
+/* Footer (Dark espresso base) */
+.site-footer {
+    background-color: var(--sb-house-green) !important;
+    padding: var(--space-3) 0 !important;
+    color: var(--sb-text-white-soft) !important;
+    border-top: none !important;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.4rem !important;
+}
+
+.footer-content a {
+    color: var(--sb-white) !important;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    color: var(--sb-gold) !important;
+    text-decoration: underline;
+}
+
+/* General Layout Page Titles */
+.page-header-container {
+    margin-bottom: 8px !important;
+}
+
+.page-title {
+    font-family: var(--font-sans) !important;
+    font-size: 2.4rem !important;
+    font-weight: 800 !important;
+    color: var(--sb-green) !important;
+    letter-spacing: -0.016em !important;
+    margin-bottom: 2px !important;
+}
+
+.page-description {
+    font-size: 1.4rem !important;
+    color: var(--sb-text-black-soft) !important;
+}
+
+/* Content Cards & Container Panels */
+.sb-card {
+    background-color: var(--sb-white) !important;
+    border-radius: var(--card-radius) !important;
+    border: none !important;
+    box-shadow: var(--shadow-card) !important;
+    padding: 16px 20px !important;
+    transition: var(--transition-smooth);
+}
+
+.sb-card:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Starbucks Official Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 7px 18px !important;
+    border-radius: var(--button-radius) !important;
+    font-family: var(--font-sans) !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    cursor: pointer;
+    text-decoration: none !important;
+    border: 1px solid var(--sb-accent) !important;
+    background-color: var(--sb-accent) !important;
+    color: var(--sb-white) !important;
+    transition: var(--transition-btn-active) !important;
+}
+
+.btn:hover {
+    background-color: var(--sb-green) !important;
+    border-color: var(--sb-green) !important;
+}
+
+.btn:active {
+    transform: scale(0.95) !important; /* signature active scale feedback */
+}
+
+/* Outlined buttons */
+.btn-secondary {
+    background-color: transparent !important;
+    color: var(--sb-accent) !important;
+    border: 1px solid var(--sb-accent) !important;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(0, 117, 74, 0.06) !important;
+    color: var(--sb-accent) !important;
+}
+
+.btn-light {
+    background-color: transparent !important;
+    color: var(--sb-text-black) !important;
+    border: 1px solid var(--sb-text-black) !important;
+}
+
+.btn-light:hover {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Inverted buttons (white outline on dark green) */
+.btn-outline-dark, .btn-outlined-dark {
+    background-color: transparent !important;
+    color: var(--sb-text-black) !important;
+    border: 1px solid var(--sb-text-black) !important;
+}
+
+.btn-outline-dark:hover, .btn-outlined-dark:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Inverted White Buttons for dark containers */
+.btn-inverted {
+    background-color: var(--sb-white) !important;
+    color: var(--sb-accent) !important;
+    border: 1px solid var(--sb-white) !important;
+}
+
+.btn-inverted:hover {
+    background-color: var(--sb-canvas) !important;
+}
+
+.btn-outline-light {
+    background-color: transparent !important;
+    color: var(--sb-white) !important;
+    border: 1px solid var(--sb-white) !important;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Signature Frap Floating Circular Button */
+.frap-btn {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    width: 56px;
+    height: 56px;
+    border-radius: 50% !important;
+    background-color: var(--sb-accent) !important;
+    color: var(--sb-white) !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: var(--shadow-frap-base), var(--shadow-frap-ambient) !important;
+    transition: var(--transition-btn-active) !important;
+}
+
+.frap-btn:hover {
+    background-color: var(--sb-green) !important;
+}
+
+.frap-btn:active {
+    transform: scale(0.95) !important;
+    box-shadow: var(--shadow-frap-base), 0 0 0 rgba(0,0,0,0) !important;
+}
+
+/* Metrics Dashboard grid & cards */
+.metrics-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+}
+
+@media (min-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (min-width: 1400px) {
+    .metrics-grid {
+        grid-template-columns: repeat(8, 1fr) !important;
+    }
+}
+
+.dashboard-metric-card {
+    background-color: var(--sb-white) !important;
+    border-radius: 12px !important;
+    padding: 10px 14px !important;
+    box-shadow: var(--shadow-card) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 75px;
+    border: none !important;
+    transition: var(--transition-smooth) !important;
+    text-decoration: none !important;
+}
+
+.dashboard-metric-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dashboard-metric-card:active {
+    transform: translateY(0) scale(0.98) !important;
+    box-shadow: var(--shadow-card) !important;
+}
+
+.dashboard-metric-card .metric-label {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: var(--sb-text-black-soft) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.dashboard-metric-card .metric-value {
+    font-family: var(--font-sans) !important;
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    color: var(--sb-green) !important;
+    margin-top: 2px !important;
+    letter-spacing: -0.02em !important;
+}
+
+.dashboard-metric-card .metric-footer {
+    font-size: 1.1rem !important;
+    color: var(--sb-text-black-soft) !important;
+    margin-top: 6px !important;
+    border-top: 1px solid var(--sb-ceramic) !important;
+    padding-top: 6px !important;
+}
+
+/* Content cards and lists */
+.courses-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: var(--space-4) !important;
+}
+
+.course-card-premium {
+    background-color: var(--sb-white) !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: var(--shadow-card) !important;
+    padding: var(--space-4) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    transition: var(--transition-smooth) !important;
+}
+
+.course-card-premium:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0px 6px 12px rgba(0,0,0,0.08) !important;
+}
+
+.course-card-premium h3 {
+    margin: var(--space-2) 0 !important;
+}
+
+.category-tag {
+    background-color: var(--sb-light-green) !important;
+    color: var(--sb-green) !important;
+    padding: 4px 12px !important;
+    border-radius: var(--button-radius) !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    display: inline-block !important;
+    width: fit-content;
+}
+
+.price-display {
+    font-family: var(--font-sans) !important;
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    color: var(--sb-accent) !important;
+}
+
+.price-display span {
+    font-size: 1.4rem !important;
+    font-weight: 400 !important;
+    color: var(--sb-text-black-soft) !important;
+}
+
+/* Tables (Starbucks Clean Signage Look) */
+.table-responsive, .table-scrollable {
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-card) !important;
+    border: none !important;
+    overflow: hidden !important;
+    background-color: var(--sb-white) !important;
+}
+
+.table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 1.4rem !important;
+}
+
+.table th, .table td {
+    padding: 16px 20px !important;
+    border: none !important;
+    border-bottom: 1px solid var(--sb-ceramic) !important;
+    text-align: left;
+}
+
+.table th {
+    background-color: var(--sb-ceramic) !important;
+    color: var(--sb-text-black) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 0.05em !important;
+}
+
+.table tbody tr {
+    transition: var(--transition-smooth) !important;
+}
+
+.table tbody tr:hover {
+    background-color: var(--sb-cool-gray) !important;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Form inputs & boxes */
+.form-box {
+    background-color: var(--sb-white) !important;
+    border-radius: 12px !important;
+    padding: var(--space-4) !important;
+    box-shadow: var(--shadow-card) !important;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+}
+
+.form-group label {
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    color: var(--sb-green) !important;
+    margin-bottom: 4px !important;
+}
+
+.form-control {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    border: 1px solid var(--sb-ceramic) !important;
+    border-radius: 8px !important;
+    font-size: 1.4rem !important;
+    font-family: var(--font-sans) !important;
+    color: var(--sb-text-black) !important;
+    background-color: var(--sb-white) !important;
+    transition: var(--transition-smooth) !important;
+}
+
+.form-control:focus {
+    border-color: var(--sb-accent) !important;
+    box-shadow: 0 0 0 3px rgba(0, 117, 74, 0.1) !important;
+    outline: none !important;
+}
+
+/* Validated inputs */
+input.valid, select.valid {
+    background-color: var(--color-success-bg) !important;
+}
+input.invalid, select.invalid {
+    background-color: var(--color-danger-bg) !important;
+    border-color: var(--color-danger) !important;
+}
+
+/* Badges & Tags */
+.badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 12px !important;
+    border-radius: var(--button-radius) !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+}
+
+.badge-success {
+    background-color: var(--sb-light-green) !important;
+    color: var(--sb-green) !important;
+}
+
+.badge-danger {
+    background-color: var(--color-danger-bg) !important;
+    color: var(--color-danger) !important;
+}
+
+.badge-warning {
+    background-color: var(--color-warning-bg) !important;
+    color: #d46b08 !important;
+}
+
+/* Quick Actions links */
+.quick-action-link {
+    display: flex !important;
+    gap: var(--space-2) !important;
+    align-items: center !important;
+    padding: var(--space-2) var(--space-3) !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--sb-ceramic) !important;
+    background-color: var(--sb-white) !important;
+    text-decoration: none !important;
+    transition: var(--transition-smooth) !important;
+    color: var(--sb-text-black) !important;
+}
+
+.quick-action-link:hover {
+    border-color: var(--sb-accent) !important;
+    background-color: var(--sb-cool-gray) !important;
+    transform: translateX(3px) !important;
+}
+
+.quick-action-link:active {
+    transform: translateX(2px) scale(0.98) !important;
+}
+
+/* Alert notifications */
+.info-box, .success-box, .warning-box, .validation-summary-errors {
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-weight: 500 !important;
+    font-size: 1.4rem !important;
+    margin-bottom: var(--space-3) !important;
+}
+
+.info-box {
+    background-color: var(--color-info-bg) !important;
+    color: var(--color-info) !important;
+}
+
+.success-box {
+    background-color: var(--sb-light-green) !important;
+    color: var(--sb-green) !important;
+}
+
+.warning-box {
+    background-color: var(--color-warning-bg) !important;
+    color: #d46b08 !important;
+}
+
+.validation-summary-errors {
+    background-color: var(--color-danger-bg) !important;
+    color: var(--color-danger) !important;
+}
+
+.validation-summary-errors ul {
+    margin-top: 4px;
+    padding-left: 16px;
+}
+
+/* Filter pills */
+.filter-pill {
+    padding: 8px 18px !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    color: var(--sb-text-black) !important;
+    background-color: var(--sb-white) !important;
+    border: 1px solid var(--sb-ceramic) !important;
+    border-radius: var(--button-radius) !important;
+    cursor: pointer !important;
+    transition: var(--transition-smooth) !important;
+}
+
+.filter-pill:hover {
+    background-color: var(--sb-cool-gray) !important;
+    border-color: var(--sb-text-black) !important;
+}
+
+.filter-pill.active {
+    background-color: var(--sb-green) !important;
+    color: var(--sb-white) !important;
+    border-color: var(--sb-green) !important;
+}
+
+/* PDP Size selector options */
+.size-selector-row {
+    display: flex !important;
+    gap: var(--space-3) !important;
+    margin-bottom: var(--space-3) !important;
+    width: 100%;
+}
+
+.size-option-card {
+    flex: 1;
+    background-color: var(--sb-white) !important;
+    border: 1px solid var(--sb-ceramic) !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.size-option-card:hover {
+    border-color: var(--sb-accent) !important;
+}
+
+.size-option-card.active {
+    border-color: var(--sb-accent) !important;
+    box-shadow: 0 0 0 2px var(--sb-accent) !important;
+}
+
+/* Color block rhythm banner styles */
+.feature-band {
+    background-color: var(--sb-house-green) !important;
+    color: var(--sb-white) !important;
+    padding: var(--space-6) 0 !important;
+}
+
+.feature-band h2 {
+    color: var(--sb-white) !important;
+}
+
+.feature-band p {
+    color: var(--sb-text-white-soft) !important;
+}
+
+/* Custom error tags & details */
+.text-danger {
+    color: var(--color-danger) !important;
+    font-size: 1.2rem !important;
+    margin-top: 4px;
+}
