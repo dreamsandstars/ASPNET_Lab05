@@ -1,0 +1,53 @@
+@model AspNetWeek3.Mvc.ViewModels.CourseAdjustSeatsViewModel
+@{
+    ViewData["Title"] = "Điều chỉnh số chỗ trống";
+}
+
+<div style="max-width: 600px; margin: 0 auto; padding: 0 10px;">
+    <div class="page-header-container" style="margin-bottom: 12px; margin-top: 5px;">
+        <a asp-action="Index" style="color: var(--sb-green); font-weight: 700; font-size: 13.5px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; margin-bottom: 6px;">
+            &larr; Quay lại danh sách
+        </a>
+        <h1 class="page-title" style="font-size: 20px !important; margin: 0 0 2px 0 !important; line-height: 1.2;">Điều Chỉnh Số Chỗ Trống</h1>
+        <p class="page-description" style="margin: 0 !important; font-size: 13px !important; line-height: 1.2;">Thay đổi số chỗ trống bằng cách cộng thêm hoặc giảm đi. Hệ thống bảo vệ tránh ghi đè đồng thời bằng RowVersion.</p>
+    </div>
+
+    <div class="sb-card" style="padding: 20px !important;">
+        <form asp-action="AdjustSeats" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RowVersion" />
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors" style="margin-bottom: 0;"></div>
+
+            <div class="sb-card" style="background: rgba(0, 117, 74, 0.03); border: 1px solid rgba(0, 117, 74, 0.1); padding: 12px 16px !important; margin-bottom: 4px;">
+                <div style="font-size: 13px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 4px;">Thông tin khóa học</div>
+                <div style="font-size: 15px; font-weight: 800; color: var(--sb-text-black); margin-bottom: 6px;">@Model.Name</div>
+                <div style="font-size: 13.5px; color: var(--text-muted);">
+                    Số chỗ hiện tại: <strong style="color: var(--sb-green); font-size: 15px;">@Model.CurrentSeats</strong>
+                </div>
+            </div>
+
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important;">
+                <label asp-for="SeatChange" style="font-weight: 700; font-size: 13.5px; color: var(--sb-dark-green); margin-bottom: 2px;">Số chỗ thay đổi (Delta)</label>
+                <input asp-for="SeatChange" type="number" class="form-control" style="height: 40px; font-size: 14px; padding: 6px 12px;" placeholder="Ví dụ: +5 để tăng, -3 để giảm..." />
+                <span style="font-size: 11px; color: var(--text-muted); margin-top: 1px; display: block; line-height: 1.2;">
+                    Nhập số dương để tăng hoặc số âm để giảm số lượng chỗ trống. Tổng số chỗ sau điều chỉnh không được nhỏ hơn 0.
+                </span>
+                <span asp-validation-for="SeatChange" class="text-danger" style="font-size: 11.5px; margin-top: 1px;"></span>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; border-top: 1px solid var(--sb-ceramic); padding-top: 14px;">
+                <a asp-action="Index" class="btn btn-light" style="height: 38px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0 16px; font-size: 13px;">
+                    Hủy bỏ
+                </a>
+                <button type="submit" class="btn" style="height: 38px; padding: 0 20px; font-size: 13px; background: #2563eb !important; border-color: #2563eb !important;">
+                    Xác nhận điều chỉnh
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

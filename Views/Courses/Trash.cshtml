@@ -1,0 +1,76 @@
+@model IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseTrashItemViewModel>
+@{
+    ViewData["Title"] = "Kho lưu trữ khóa học";
+}
+
+<div class="page-header-container" style="margin-bottom: 24px;">
+    <a asp-action="Index" style="color: var(--sb-green); font-weight: 700; font-size: 14.5px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 12px;">
+        &larr; Quay lại danh sách chính
+    </a>
+    <h1 class="page-title">Kho Lưu Trữ Khóa Học</h1>
+    <p class="page-description">Khôi phục các khóa học đã ngưng tuyển sinh hoặc xóa vĩnh viễn khỏi hệ thống.</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="success-box" style="display: flex; align-items: center; justify-content: space-between; max-width: 800px; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>✅</span>
+            <span>@TempData["Success"]</span>
+        </div>
+        <button onclick="this.parentElement.style.display='none'" style="background: none; border: none; color: inherit; cursor: pointer; font-size: 18px; font-weight: 700;">&times;</button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tên khóa học</th>
+                <th>Mã khóa học</th>
+                <th>Ngày ngưng tuyển sinh</th>
+                <th style="text-align: right;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="4" style="padding: 60px !important; text-align: center; color: var(--text-muted);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; display: block; margin: 0 auto 12px auto; color: var(--sb-text-black-soft);">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                        Kho lưu trữ trống.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="font-weight: 700; color: var(--sb-dark-green); padding: 16px 20px !important;">@item.Name</td>
+                        <td style="font-family: var(--font-mono); color: var(--text-body); padding: 16px 20px !important;">@item.CourseCode</td>
+                        <td style="color: var(--color-danger); font-weight: 600; padding: 16px 20px !important;">
+                            @(item.DeletedAt.HasValue ? item.DeletedAt.Value.ToString("dd/MM/yyyy HH:mm") : "-")
+                        </td>
+                        <td style="text-align: right; padding: 16px 20px !important;">
+                            <div style="display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
+                                <form asp-action="Restore" asp-route-id="@item.Id" method="post" style="margin: 0;">
+                                    <button type="submit" class="btn" style="padding: 6px 16px !important; font-size: 12.5px !important; background: var(--sb-green) !important; border-color: var(--sb-green) !important;">
+                                        Khôi phục
+                                    </button>
+                                </form>
+                                <form asp-action="DeleteForever" asp-route-id="@item.Id" method="post" style="margin: 0;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn khóa học này? Thao tác này không thể hoàn tác!');">
+                                    <button type="submit" class="btn" style="padding: 6px 16px !important; font-size: 12.5px !important; background: var(--color-danger) !important; border-color: var(--color-danger) !important;">
+                                        Xóa vĩnh viễn
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

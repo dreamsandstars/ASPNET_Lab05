@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Enrollment Successful";
+}
+
+<div style="max-width: 540px; margin: 60px auto; text-align: center;">
+    <div class="sb-card" style="padding: 50px 40px !important;">
+        
+        <div style="background: var(--sb-mint); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; color: var(--sb-green); border: 2px solid var(--border-color);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" style="width: 36px; height: 36px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+        </div>
+        
+        <h1 class="page-title" style="font-size: 30px !important; margin-bottom: 12px; text-align: center;">Enrollment Completed!</h1>
+        
+        <p class="page-description" style="margin-bottom: 35px; padding: 0 10px; line-height: 1.6;">
+            The student account has been registered, enrollment records created, and class capacity updated successfully within a secure database transaction.
+        </p>
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <a asp-controller="Courses" asp-action="Index" class="btn">Browse Courses</a>
+            <a asp-controller="Enrollments" asp-action="History" class="btn btn-secondary">Enrollment History</a>
+        </div>
+    </div>
+</div>

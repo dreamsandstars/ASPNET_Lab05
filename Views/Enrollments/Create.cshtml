@@ -1,0 +1,76 @@
+@model AspNetWeek3.Mvc.ViewModels.EnrollmentCreateViewModel
+
+@{
+    ViewData["Title"] = "Course Enrollment";
+    var courses = ViewBag.Courses as IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel> ?? new List<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel>();
+}
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 10px;">
+    <div class="page-header-container" style="margin-bottom: 12px; margin-top: 5px; display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+            <h1 class="page-title" style="font-size: 18px !important; margin: 0 !important; line-height: 1.2;">Course Enrollment</h1>
+            <p class="page-description" style="margin: 0 !important; font-size: 12.5px !important; line-height: 1.2;">Register student details to request class enrollment.</p>
+        </div>
+    </div>
+
+    <div class="sb-card" style="padding: 16px !important;">
+        <form asp-controller="Enrollments" asp-action="Create" method="post" style="display: flex; flex-direction: column; gap: 12px;">
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+            {
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors" style="margin-bottom: 0;"></div>
+            }
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <!-- Left Column -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important;">
+                        <label asp-for="StudentName" style="font-weight: 700; font-size: 13px; color: var(--sb-dark-green); margin-bottom: 2px;">Full Name</label>
+                        <input asp-for="StudentName" placeholder="e.g. John Doe" class="form-control" style="height: 38px; font-size: 13.5px; padding: 6px 12px !important;" />
+                        <span asp-validation-for="StudentName" class="text-danger" style="font-size: 11.5px; margin-top: 1px;"></span>
+                    </div>
+
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important;">
+                        <label asp-for="StudentEmail" style="font-weight: 700; font-size: 13px; color: var(--sb-dark-green); margin-bottom: 2px;">Email Address</label>
+                        <input asp-for="StudentEmail" placeholder="e.g. john.doe@example.com" class="form-control" style="height: 38px; font-size: 13.5px; padding: 6px 12px !important;" />
+                        <span asp-validation-for="StudentEmail" class="text-danger" style="font-size: 11.5px; margin-top: 1px;"></span>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important;">
+                        <label asp-for="CourseId" style="font-weight: 700; font-size: 13px; color: var(--sb-dark-green); margin-bottom: 2px;">Select Course</label>
+                        <select asp-for="CourseId" class="form-control" style="height: 38px; font-size: 13.5px; padding: 6px 24px 6px 12px !important; background: #ffffff;">
+                            <option value="">-- Select Course --</option>
+                            @foreach (var c in courses)
+                            {
+                                <option value="@c.Id">
+                                    @c.Name (@c.Price.ToString("N0") VND) - @c.AvailableSeats left
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="CourseId" class="text-danger" style="font-size: 11.5px; margin-top: 1px;"></span>
+                    </div>
+
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important;">
+                        <label asp-for="Quantity" style="font-weight: 700; font-size: 13px; color: var(--sb-dark-green); margin-bottom: 2px;">Number of Seats (Quantity)</label>
+                        <input asp-for="Quantity" type="number" min="1" max="10" class="form-control" style="height: 38px; font-size: 13.5px; padding: 6px 12px !important;" />
+                        <span asp-validation-for="Quantity" class="text-danger" style="font-size: 11.5px; margin-top: 1px;"></span>
+                    </div>
+
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important;">
+                        <label asp-for="PromoCode" style="font-weight: 700; font-size: 13px; color: var(--sb-dark-green); margin-bottom: 2px;">Promo Code (e.g. KM10, KM20, WELCOME)</label>
+                        <input asp-for="PromoCode" placeholder="Enter code if any" class="form-control" style="height: 38px; font-size: 13.5px; padding: 6px 12px !important; text-transform: uppercase;" />
+                        <span asp-validation-for="PromoCode" class="text-danger" style="font-size: 11.5px; margin-top: 1px;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%; height: 38px; margin-top: 8px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center;">
+                Confirm Enrollment
+            </button>
+        </form>
+    </div>
+</div>

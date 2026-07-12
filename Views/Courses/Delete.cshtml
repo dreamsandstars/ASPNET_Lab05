@@ -1,0 +1,51 @@
+@model AspNetWeek3.Mvc.ViewModels.CourseDetailViewModel
+@{
+    ViewData["Title"] = "Xác nhận xóa khóa học";
+}
+
+<div class="page-header-container" style="margin-bottom: 24px;">
+    <a asp-action="Index" style="color: var(--sb-green); font-weight: 700; font-size: 14.5px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 12px;">
+        &larr; Quay lại danh sách
+    </a>
+    <h1 class="page-title">Xác Nhận Xóa Khóa Học</h1>
+    <p class="page-description">Bạn có chắc chắn muốn ngưng tuyển sinh/xóa mềm khóa học này? Khóa học có thể được khôi phục từ danh sách Lưu trữ.</p>
+</div>
+
+<div class="sb-card" style="max-width: 600px; display: flex; flex-direction: column; gap: 20px;">
+    <div class="warning-box" style="display: flex; align-items: flex-start; gap: 12px; margin: 0 !important;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 20px; height: 20px; flex-shrink: 0; color: #d46b08;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg>
+        <div>
+            Hành động này sẽ <strong>Xóa Mềm / Ngưng tuyển sinh</strong> khóa học. Khóa học sẽ biến mất khỏi danh sách chính và chuyển vào mục Lưu trữ (Thùng rác).
+        </div>
+    </div>
+
+    <div style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 16px 0; display: flex; flex-direction: column; gap: 12px; font-size: 14.5px;">
+        <div style="display: flex;">
+            <span style="width: 150px; color: var(--text-muted); font-weight: 600;">Tên khóa học:</span>
+            <span style="color: var(--sb-dark-green); font-weight: 700;">@Model.Name</span>
+        </div>
+        <div style="display: flex;">
+            <span style="width: 150px; color: var(--text-muted); font-weight: 600;">Mã khóa học:</span>
+            <span style="color: var(--sb-green); font-family: var(--font-mono); font-weight: 700;">@Model.CourseCode</span>
+        </div>
+        <div style="display: flex;">
+            <span style="width: 150px; color: var(--text-muted); font-weight: 600;">Học phí:</span>
+            <span style="color: var(--sb-dark-green); font-weight: 700;">@Model.Price.ToString("N0") đ</span>
+        </div>
+        <div style="display: flex;">
+            <span style="width: 150px; color: var(--text-muted); font-weight: 600;">Số chỗ trống:</span>
+            <span style="color: var(--sb-dark-green); font-weight: 700;">@Model.AvailableSeats</span>
+        </div>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="margin: 0; display: flex; justify-content: flex-end; gap: 12px;">
+        <a asp-action="Index" class="btn btn-light">
+            Hủy bỏ
+        </a>
+        <button type="submit" class="btn" style="background: var(--color-danger) !important; border-color: var(--color-danger) !important;">
+            Xác nhận xóa mềm
+        </button>
+    </form>
+</div>

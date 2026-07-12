@@ -1,0 +1,56 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Nhập khóa học hàng loạt";
+}
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 10px;">
+    <div class="page-header-container" style="margin-bottom: 12px; margin-top: 5px;">
+        <h1 class="page-title" style="font-size: 18px !important; margin: 0 !important; line-height: 1.2;">Nhập khóa học hàng loạt</h1>
+        <p class="page-description" style="margin: 0 !important; font-size: 12.5px !important; line-height: 1.2;">Nhập hàng loạt khóa học mới bằng tệp tin định dạng CSV.</p>
+    </div>
+
+    <div class="sb-card" style="padding: 16px !important; margin-bottom: 16px;">
+        <h3 style="font-size: 14px; margin-top: 0; color: var(--sb-dark-green); font-weight: 700; margin-bottom: 8px;">Hướng dẫn định dạng file CSV:</h3>
+        <p style="font-size: 13px; color: #555; line-height: 1.4; margin-bottom: 8px;">
+            Tệp CSV của bạn phải có cấu trúc gồm các cột sau (ngăn cách bằng dấu phẩy):
+        </p>
+        <code style="display: block; background: #f4f6f8; padding: 8px 12px; border-radius: 4px; font-family: monospace; font-size: 12.5px; margin-bottom: 12px; color: #333; overflow-x: auto;">
+            MãKhóaHọc,TênKhóaHọc,HọcPhí,SốChỗTrống,IDDanhMục,MôTả<br />
+            CS303,Lập trình Python cơ bản,2500000,30,1,Khóa học Python cho người mới bắt đầu<br />
+            DS202,UI/UX nâng cao với Figma,4000000,15,2,Khóa học chuyên sâu Figma
+        </code>
+        <ul style="font-size: 12.5px; color: #666; padding-left: 20px; line-height: 1.5; margin-bottom: 16px;">
+            <li><strong>ID Danh mục:</strong> Sử dụng <code>1</code> cho Programming (Lập trình) và <code>2</code> cho Design (Thiết kế).</li>
+            <li><strong>Tính duy nhất:</strong> Mã khóa học không được trùng lặp với bất kỳ mã nào sẵn có trong cơ sở dữ liệu.</li>
+            <li><strong>Đảm bảo tính toàn vẹn:</strong> Hệ thống sử dụng Transaction. Nếu bất kỳ dòng nào bị lỗi dữ liệu, toàn bộ file sẽ bị từ chối lưu.</li>
+        </ul>
+    </div>
+
+    <div class="sb-card" style="padding: 16px !important;">
+        <form asp-controller="Courses" asp-action="Import" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 12px;">
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="validation-summary-errors" style="margin-bottom: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #ff4d4d; border-radius: 4px;">
+                    <div asp-validation-summary="All" style="font-size: 12.5px; color: #ff0000; list-style-type: none; padding-left: 0; margin: 0;"></div>
+                </div>
+            }
+
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                <label style="font-weight: 700; font-size: 13px; color: var(--sb-dark-green);">Chọn tệp CSV từ máy tính</label>
+                <input type="file" name="file" accept=".csv" class="form-control" style="padding: 6px 12px; font-size: 13px; height: auto;" required />
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button type="submit" class="btn" style="flex: 1; height: 38px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; background-color: var(--sb-dark-green); color: #fff; border: none; cursor: pointer; border-radius: 4px;">
+                    Tải lên & Thực thi Nhập (Import)
+                </button>
+                <a asp-action="Index" class="btn-secondary" style="height: 38px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; border: 1px solid #ccc; text-decoration: none; border-radius: 4px; color: #333; background: #fff;">
+                    Hủy bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

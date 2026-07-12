@@ -1,0 +1,105 @@
+@model IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel>
+
+@{
+    ViewData["Title"] = "Danh sách Khóa học";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="success-box" style="display: flex; align-items: center; justify-content: space-between; max-width: 800px; margin: 0 auto 24px auto;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>✅</span>
+            <span>@TempData["Success"]</span>
+        </div>
+        <button onclick="this.parentElement.style.display='none'" style="background: none; border: none; color: inherit; cursor: pointer; font-size: 18px; font-weight: 700;">&times;</button>
+    </div>
+}
+
+<div class="page-header-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+    <div>
+        <h1 class="page-title">Khóa Học Hiện Có</h1>
+        <p class="page-description">Danh sách các khóa học đào tạo đang mở lớp tuyển sinh</p>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a asp-action="Create" class="btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Tạo Khóa Học
+        </a>
+        <a asp-action="Search" class="btn btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+            </svg>
+            Tìm kiếm & Lọc
+        </a>
+        <a asp-action="Import" class="btn btn-secondary" style="border-color: #3b82f6; color: #1d4ed8;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
+            </svg>
+            Nhập CSV (Import)
+        </a>
+        <a asp-action="ExportToCsv" class="btn btn-secondary" style="border-color: #10b981; color: #047857;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 16px; height: 16px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Xuất CSV
+        </a>
+    </div>
+</div>
+
+<div class="courses-grid">
+    @foreach (var course in Model)
+    {
+        <div class="course-card-premium" style="position: relative;">
+            @if (course.IsLowSeats)
+            {
+                <div class="badge badge-warning" style="position: absolute; top: 24px; right: 28px; display: flex; align-items: center; gap: 4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 12px; height: 12px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                    Sắp hết chỗ
+                </div>
+            }
+
+            <div>
+                <span class="category-tag">
+                    @course.CategoryName
+                </span>
+                
+                <h3>
+                    @if (!string.IsNullOrEmpty(course.CourseCode))
+                    {
+                        <span style="color: var(--sb-green); font-family: var(--font-mono); font-size: 19px; margin-right: 6px; font-weight: 700;">[@course.CourseCode]</span>
+                    }
+                    @course.Name
+                </h3>
+
+                <div class="price-display">
+                    @course.Price.ToString("N0") <span>VND</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 14.5px; color: var(--text-muted);">
+                    Còn lại: <strong style="color: @(course.IsLowSeats ? "var(--color-danger)" : "var(--sb-green)"); font-size: 16px; font-weight: 700;">@course.AvailableSeats</strong> chỗ trống
+                </span>
+                
+                <div style="display: flex; gap: 14px; font-weight: 700; font-size: 14px;">
+                    <a asp-action="Detail" asp-route-id="@course.Id" style="color: var(--sb-green);">
+                        Chi tiết
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@course.Id" style="color: var(--color-warning);">
+                        Sửa
+                    </a>
+                    <a asp-action="AdjustSeats" asp-route-id="@course.Id" style="color: #2563eb;">
+                        Chỗ
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@course.Id" style="color: var(--color-danger);">
+                        Xóa
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

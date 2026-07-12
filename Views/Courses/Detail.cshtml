@@ -1,0 +1,101 @@
+@model AspNetWeek3.Mvc.ViewModels.CourseDetailViewModel
+@{
+    ViewData["Title"] = "Chi tiết khóa học";
+}
+
+<div class="page-header-container" style="margin-bottom: 24px;">
+    <a asp-action="Index" style="color: var(--sb-green); font-weight: 700; font-size: 14.5px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 12px;">
+        &larr; Quay lại danh sách
+    </a>
+    <h1 class="page-title">Chi Tiết Khóa Học</h1>
+    <p class="page-description">Thông tin đầy đủ và lịch sử cập nhật của khóa học.</p>
+</div>
+
+<div class="sb-card" style="max-width: 750px; display: flex; flex-direction: column; gap: 24px;">
+    <div style="border-bottom: 2px solid var(--border-color); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h2 class="coffee-title" style="font-size: 26px; font-weight: 800; margin: 0;">@Model.Name</h2>
+            <span style="font-family: var(--font-mono); font-size: 13.5px; color: var(--sb-green); font-weight: 700; background: var(--sb-mint); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 8px;">Mã khóa học: @Model.CourseCode</span>
+        </div>
+        <div>
+            @if (Model.IsDeleted)
+            {
+                <span class="badge badge-danger">
+                    ĐÃ NGƯNG TUYỂN SINH
+                </span>
+            }
+            else
+            {
+                <span class="badge badge-success">
+                    ĐANG TUYỂN SINH
+                </span>
+            }
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="background: var(--sb-cream); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 16px;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Học Phí</div>
+            <div style="font-family: var(--font-serif); font-size: 24px; font-weight: 800; color: var(--sb-green); margin-top: 4px;">@Model.Price.ToString("N0") VND</div>
+        </div>
+
+        <div style="background: var(--sb-cream); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 16px;">
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Số Lượng Chỗ Trống</div>
+            <div style="font-family: var(--font-serif); font-size: 24px; font-weight: 800; color: var(--sb-dark-green); margin-top: 4px;">@Model.AvailableSeats chỗ</div>
+        </div>
+    </div>
+
+    <div>
+        <div style="font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Danh mục khóa học</div>
+        <div class="category-tag">@Model.CategoryName</div>
+    </div>
+
+    <div>
+        <div style="font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Mô tả khóa học</div>
+        <div style="font-size: 14.5px; color: var(--text-body); line-height: 1.6; background: var(--sb-cream); border-radius: var(--border-radius-md); padding: 16px; border: 1px solid var(--border-color); min-height: 60px;">
+            @(!string.IsNullOrEmpty(Model.Description) ? Model.Description : "Không có mô tả cho khóa học này.")
+        </div>
+    </div>
+
+    <div style="background: var(--sb-cream); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 13.5px;">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+            <span style="color: var(--text-muted); font-weight: 600;">Ngày tạo hệ thống:</span>
+            <span style="color: var(--sb-dark-green); font-weight: 700;">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+            <span style="color: var(--text-muted); font-weight: 600;">Lần cập nhật cuối:</span>
+            <span style="color: var(--sb-dark-green); font-weight: 700;">@(Model.UpdatedAt.HasValue ? Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "Chưa cập nhật")</span>
+        </div>
+        @if (Model.IsDeleted)
+        {
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                <span style="color: var(--color-danger); font-weight: 600;">Ngày ngưng tuyển sinh:</span>
+                <span style="color: var(--color-danger); font-weight: 700;">@(Model.DeletedAt.HasValue ? Model.DeletedAt.Value.ToString("dd/MM/yyyy HH:mm:ss") : "-")</span>
+            </div>
+        }
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <span style="color: var(--text-muted); font-weight: 600;">Concurrency Token (RowVersion):</span>
+            <span style="color: var(--text-body); font-family: var(--font-mono); font-size: 11px; background: var(--sb-cream-dark); padding: 4px 8px; border-radius: 4px; word-break: break-all; max-width: 100%;">@Model.RowVersion</span>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; justify-content: flex-end; border-top: 2px solid var(--border-color); padding-top: 20px; align-items: center;">
+        @if (Model.IsDeleted)
+        {
+            <form asp-action="Restore" asp-route-id="@Model.Id" method="post" style="margin: 0;">
+                <button type="submit" class="btn" style="background: var(--sb-green) !important;">
+                    Khôi phục khóa học
+                </button>
+            </form>
+        }
+        else
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary" style="border-color: var(--color-warning) !important; color: var(--color-warning) !important; background: transparent !important;">
+                Sửa khóa học
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn" style="background: var(--color-danger) !important; border-color: var(--color-danger) !important;">
+                Ngưng tuyển sinh (Xóa mềm)
+            </a>
+        }
+    </div>
+</div>

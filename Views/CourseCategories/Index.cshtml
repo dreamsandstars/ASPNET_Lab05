@@ -1,0 +1,328 @@
+@model IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseCategoryListItemViewModel>
+
+@{
+    ViewData["Title"] = "Chuyên mục đào tạo";
+    var courses = ViewBag.Courses as IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel> ?? new List<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel>();
+    var firstCategory = Model.FirstOrDefault();
+}
+
+<style>
+    /* Layout structure */
+    .categories-layout {
+        display: flex;
+        gap: 24px;
+        margin-top: 15px;
+    }
+    .categories-sidebar {
+        width: 280px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .categories-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Double Bezel Outer Shell for Nav Card */
+    .category-nav-shell {
+        background: rgba(0, 0, 0, 0.02);
+        padding: 4px;
+        border-radius: 14px;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+    .category-nav-shell:hover {
+        transform: translateY(-2px);
+        background: rgba(0, 117, 74, 0.02);
+        border-color: rgba(0, 117, 74, 0.08);
+    }
+    /* Inner Core for Nav Card */
+    .category-nav-core {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.015);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .category-nav-shell:hover .category-nav-core {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Active Tab State */
+    .category-nav-shell.active {
+        background: rgba(0, 117, 74, 0.05) !important;
+        border-color: rgba(0, 117, 74, 0.15) !important;
+    }
+    .category-nav-shell.active .category-nav-core {
+        border-color: rgba(0, 117, 74, 0.2) !important;
+        background: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(0, 117, 74, 0.06) !important;
+    }
+    .category-nav-shell.active .category-nav-icon {
+        background: var(--sb-mint) !important;
+        color: var(--sb-dark-green) !important;
+        transform: scale(1.05);
+    }
+
+    .category-nav-icon {
+        background: rgba(0, 117, 74, 0.06);
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--sb-dark-green);
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+
+    /* Content panel - Double Bezel with animation */
+    .panel-shell {
+        background: rgba(0, 0, 0, 0.015);
+        padding: 6px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        animation: panelFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .panel-core {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 20px !important;
+        border: 1px solid rgba(0, 0, 0, 0.045);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.01);
+    }
+
+    @@keyframes panelFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Course Mini-Card - Double Bezel */
+    .course-card-shell {
+        background: rgba(0, 0, 0, 0.01);
+        padding: 4px;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.02);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .course-card-shell:hover {
+        transform: translateY(-3px);
+        background: rgba(0, 117, 74, 0.02);
+        border-color: rgba(0, 117, 74, 0.1);
+    }
+    .course-card-core {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 14px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .course-card-shell:hover .course-card-core {
+        border-color: rgba(0, 117, 74, 0.15);
+        box-shadow: 0 8px 24px rgba(0, 117, 74, 0.05);
+    }
+
+    .pulse-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        box-shadow: 0 0 6px var(--color-danger);
+        animation: pulseAnimation 1.5s infinite;
+    }
+    .green-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--sb-green);
+        box-shadow: 0 0 6px var(--sb-green);
+    }
+
+    @@keyframes pulseAnimation {
+        0% {
+            background-color: var(--color-danger);
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            background-color: rgba(220, 53, 69, 0.4);
+            transform: scale(1.3);
+            opacity: 0.5;
+        }
+        100% {
+            background-color: var(--color-danger);
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @@media (max-width: 900px) {
+        .categories-layout {
+            flex-direction: column;
+            gap: 16px;
+        }
+        .categories-sidebar {
+            width: 100%;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .category-nav-shell {
+            flex: 1;
+            min-width: 240px;
+        }
+    }
+</style>
+
+<div class="page-header-container" style="margin-bottom: 12px; margin-top: 5px;">
+    <span class="eyebrow-tag" style="background: rgba(0, 117, 74, 0.08); color: var(--sb-dark-green); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 8px;">HỆ THỐNG ĐÀO TẠO</span>
+    <h1 class="page-title" style="font-size: 22px !important; margin: 0 0 2px 0 !important; line-height: 1.2; font-weight: 800; letter-spacing: -0.01em;">Chuyên Mục Đào Tạo</h1>
+    <p class="page-description" style="margin: 0 !important; font-size: 13.5px !important; line-height: 1.2; color: var(--text-muted);">Tổng hợp các nhóm ngành và danh sách khóa học đang được giảng dạy.</p>
+</div>
+
+<div class="categories-layout">
+    <!-- Left Sidebar: Categories Navigation Tabs -->
+    <div class="categories-sidebar">
+        @foreach (var cat in Model)
+        {
+            var isActive = (firstCategory != null && firstCategory.Id == cat.Id);
+            <div id="nav-cat-@cat.Id" class="category-nav-shell @(isActive ? "active" : "")" onclick="showCategory(@cat.Id)">
+                <div class="category-nav-core">
+                    <div class="category-nav-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 18px; height: 18px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                        </svg>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4 style="font-size: 14.5px; font-weight: 800; margin: 0; color: var(--sb-dark-green); letter-spacing: -0.01em;">@cat.Name</h4>
+                        <span style="font-size: 11.5px; color: var(--text-muted);">@cat.CourseCount khóa học active</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Right Side: Course list grouped by category (Toggled client-side) -->
+    <div class="categories-content">
+        @foreach (var cat in Model)
+        {
+            var catCourses = courses.Where(c => c.CategoryName == cat.Name).ToList();
+            var isActive = (firstCategory != null && firstCategory.Id == cat.Id);
+
+            <div id="cat-@cat.Id" class="panel-shell" style="display: @(isActive ? "block" : "none");">
+                <div class="panel-core">
+                    <!-- Category Section Title -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1.5px solid rgba(0, 117, 74, 0.1); padding-bottom: 10px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 3.5px; height: 16px; background: var(--sb-green); border-radius: 20px;"></div>
+                            <h3 style="font-size: 15.5px; font-weight: 800; color: var(--sb-dark-green); margin: 0; letter-spacing: -0.01em;">
+                                Chuyên ngành: @cat.Name
+                            </h3>
+                        </div>
+                        <span style="background: rgba(0, 117, 74, 0.06); border: 1px solid rgba(0, 117, 74, 0.12); color: var(--sb-dark-green); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 30px; letter-spacing: 0.2px;">
+                            @catCourses.Count Khóa học
+                        </span>
+                    </div>
+
+                    <!-- Courses List Grid -->
+                    @if (catCourses.Count > 0)
+                    {
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px;">
+                            @foreach (var course in catCourses)
+                            {
+                                <div class="course-card-shell">
+                                    <div class="course-card-core">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                                            <span style="font-family: var(--font-mono); font-size: 10px; font-weight: 800; color: var(--sb-green); background: rgba(0, 117, 74, 0.05); border: 1px solid rgba(0, 117, 74, 0.1); padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">
+                                                @course.CourseCode
+                                            </span>
+                                            <span style="font-size: 13px; font-weight: 800; color: #d97706; letter-spacing: -0.01em;">
+                                                @course.Price.ToString("N0") đ
+                                            </span>
+                                        </div>
+                                        
+                                        <h4 style="font-size: 14px; font-weight: 800; color: var(--sb-dark-green); margin: 6px 0 2px 0; line-height: 1.3; min-height: 36px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; letter-spacing: -0.01em;">
+                                            @course.Name
+                                        </h4>
+
+                                        <div style="border-top: 1px dashed rgba(0, 0, 0, 0.05); padding-top: 8px; margin-top: 2px; display: flex; align-items: center; justify-content: space-between;">
+                                            @if (course.IsLowSeats)
+                                            {
+                                                <span style="font-size: 11px; color: var(--color-danger); font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                                    <span class="pulse-dot"></span>
+                                                    Chỉ còn @course.AvailableSeats chỗ
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span style="font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;">
+                                                    <span class="green-dot"></span>
+                                                    Còn @course.AvailableSeats chỗ
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 13.5px; background: rgba(0,0,0,0.01); border-radius: 8px; border: 1px dashed rgba(0,0,0,0.05);">
+                            Chưa có khóa học nào thuộc chuyên ngành này.
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function showCategory(id) {
+        // Hide all course panels
+        var panels = document.querySelectorAll('.panel-shell');
+        panels.forEach(function(panel) {
+            panel.style.display = 'none';
+        });
+
+        // Show the selected course panel
+        var activePanel = document.getElementById('cat-' + id);
+        if (activePanel) {
+            activePanel.style.display = 'block';
+        }
+
+        // Remove active class from all tabs
+        var tabs = document.querySelectorAll('.category-nav-shell');
+        tabs.forEach(function(tab) {
+            tab.classList.remove('active');
+        });
+
+        // Add active class to the clicked tab
+        var activeTab = document.getElementById('nav-cat-' + id);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+    }
+</script>

@@ -1,0 +1,136 @@
+@model IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel>
+
+@{
+    ViewData["Title"] = "Filter Courses";
+    var categories = ViewBag.Categories as IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseCategoryListItemViewModel> ?? new List<AspNetWeek3.Mvc.ViewModels.CourseCategoryListItemViewModel>();
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
+    var minPrice = ViewBag.MinPrice as decimal?;
+    var maxPrice = ViewBag.MaxPrice as decimal?;
+}
+
+<style>
+    .filter-grid-form {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr auto;
+        gap: 12px;
+        align-items: flex-end;
+    }
+    .filter-input-compact {
+        height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13.5px !important;
+        border-radius: 6px !important;
+    }
+    .filter-btn-compact {
+        height: 38px !important;
+        padding: 0 16px !important;
+        font-size: 13.5px !important;
+        border-radius: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+    }
+    @@media (max-width: 768px) {
+        .filter-grid-form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div style="margin-bottom: 16px; margin-top: 5px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px;">
+    <div>
+        <h1 class="page-title" style="font-size: 20px !important; margin: 0 0 2px 0 !important; line-height: 1.2;">Advanced Course Search</h1>
+        <p class="page-description" style="margin: 0 !important; font-size: 12.5px !important; line-height: 1.2;">Filter training courses by category and pricing bounds.</p>
+    </div>
+</div>
+
+<div class="sb-card" style="margin-bottom: 20px; padding: 14px 16px !important;">
+    <form method="get" asp-controller="Courses" asp-action="Filter" class="filter-grid-form">
+        <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 0 !important;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 4px;">Course Category</label>
+            <select name="categoryId" class="form-control filter-input-compact" style="width: 100%; background: #ffffff; padding: 6px 24px 6px 10px !important;">
+                <option value="">-- Chọn danh mục khóa học --</option>
+                @foreach (var cat in categories)
+                {
+                    if (selectedCategoryId.HasValue && selectedCategoryId.Value == cat.Id)
+                    {
+                        <option value="@cat.Id" selected>@cat.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.Id">@cat.Name</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 0 !important;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 4px;">Min Price (VND)</label>
+            <input type="number" name="minPrice" value="@minPrice" placeholder="e.g. 500,000" class="form-control filter-input-compact" />
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 0 !important;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 4px;">Max Price (VND)</label>
+            <input type="number" name="maxPrice" value="@maxPrice" placeholder="e.g. 4,000,000" class="form-control filter-input-compact" />
+        </div>
+
+        <div style="display: flex; gap: 8px; min-width: 160px; margin-bottom: 0 !important;">
+            <button type="submit" class="btn filter-btn-compact" style="flex: 1;">
+                Filter
+            </button>
+            <a asp-controller="Courses" asp-action="Filter" class="btn btn-light filter-btn-compact" style="flex: 1;">
+                Clear
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="results-container">
+    @if (!Model.Any())
+    {
+        <div style="background: var(--sb-white); border: 2px dashed var(--sb-ceramic); border-radius: 8px; padding: 40px 20px; text-align: center; color: var(--sb-text-black-soft); box-shadow: var(--shadow-card);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 38px; height: 38px; margin: 0 auto 10px auto; color: var(--sb-text-black-soft); opacity: 0.7;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+            </svg>
+            <p style="font-size: 15px; font-weight: 700; color: var(--sb-dark-green); margin: 0 0 2px 0;">No matching courses found</p>
+            <p style="font-size: 13px; margin: 0;">Try adjusting your category selection or pricing bounds.</p>
+        </div>
+    }
+    else
+    {
+        <div class="courses-grid" style="gap: 16px !important;">
+            @foreach (var course in Model)
+            {
+                <div class="course-card-premium" style="padding: 16px !important; min-height: unset !important;">
+                    <div>
+                        <span class="category-tag" style="font-size: 1.1rem !important; padding: 2px 8px !important; margin-bottom: 6px !important;">
+                            @course.CategoryName
+                        </span>
+                        
+                        <h3 style="font-size: 15px !important; margin: 4px 0 6px 0 !important; font-weight: 700;">
+                            @if (!string.IsNullOrEmpty(course.CourseCode))
+                            {
+                                <span style="color: var(--sb-green); font-family: var(--font-mono); font-size: 15px; margin-right: 4px; font-weight: 700;">[@course.CourseCode]</span>
+                            }
+                            @course.Name
+                        </h3>
+                        
+                        <div class="price-display" style="font-size: 18px !important;">
+                            @course.Price.ToString("N0") <span style="font-size: 12px !important;">VND</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--sb-ceramic); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+                        <span style="color: var(--sb-text-black-soft);">
+                            Slots left: <strong style="color: @(course.IsLowSeats ? "var(--color-danger)" : "var(--sb-green)"); font-size: 14px;">@course.AvailableSeats</strong>
+                        </span>
+                        <a asp-action="Detail" asp-route-id="@course.Id" style="color: var(--sb-green); font-weight: 700; text-decoration: none;">
+                            Details &rarr;
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

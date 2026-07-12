@@ -1,0 +1,240 @@
+@model IEnumerable<AspNetWeek3.Mvc.Controllers.LogEntry>
+@{
+    ViewData["Title"] = "Nhật ký hệ thống (Audit Logs)";
+    string selectedLevel = ViewBag.SelectedLevel as string ?? "";
+    string search = ViewBag.Search as string ?? "";
+    string selectedDate = ViewBag.SelectedDate as string ?? "";
+}
+
+<style>
+    /* Compact forms input styling overrides */
+    .compact-log-input {
+        height: 38px !important;
+        font-size: 13px !important;
+        padding: 6px 12px !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+    }
+    .compact-log-select {
+        height: 38px !important;
+        font-size: 13px !important;
+        padding: 6px 24px 6px 10px !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+    }
+
+    /* Scrollable table container */
+    .log-panel-shell {
+        background: rgba(0, 0, 0, 0.015);
+        padding: 6px;
+        border-radius: 16px;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+    .log-panel-core {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.045);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.01);
+    }
+    .log-scroll-area {
+        overflow-y: auto;
+        max-height: calc(100vh - 280px);
+        scroll-behavior: smooth;
+    }
+
+    /* Custom scrollbar */
+    .log-scroll-area::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    .log-scroll-area::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.01);
+    }
+    .log-scroll-area::-webkit-scrollbar-thumb {
+        background: rgba(0, 117, 74, 0.15);
+        border-radius: 10px;
+    }
+    .log-scroll-area::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 117, 74, 0.3);
+    }
+
+    /* Sticky table header styling */
+    .log-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 13px;
+    }
+    .log-table thead th {
+        position: sticky;
+        top: 0;
+        background: var(--sb-dark-green);
+        color: #ffffff;
+        font-weight: 700;
+        text-align: left;
+        padding: 12px 16px;
+        z-index: 10;
+        border: none;
+        letter-spacing: 0.2px;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
+    .log-table tbody tr {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.035);
+        transition: background 0.15s ease;
+    }
+    .log-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    .log-table tbody tr:hover {
+        background: rgba(0, 117, 74, 0.01);
+    }
+    .log-table tbody tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.006);
+    }
+    .log-table tbody tr:nth-child(even):hover {
+        background-color: rgba(0, 117, 74, 0.01);
+    }
+
+    /* Custom badges */
+    .log-badge {
+        display: inline-block;
+        font-size: 10.5px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 6px;
+        letter-spacing: 0.4px;
+        text-align: center;
+        width: 76px;
+    }
+    .log-badge-info {
+        background: rgba(0, 117, 74, 0.06);
+        color: var(--sb-green);
+        border: 1px solid rgba(0, 117, 74, 0.12);
+    }
+    .log-badge-warning {
+        background: rgba(217, 119, 6, 0.06);
+        color: #d97706;
+        border: 1px solid rgba(217, 119, 6, 0.12);
+    }
+    .log-badge-error {
+        background: rgba(220, 53, 69, 0.06);
+        color: var(--color-danger);
+        border: 1px solid rgba(220, 53, 69, 0.12);
+    }
+    .log-badge-debug {
+        background: rgba(100, 116, 139, 0.06);
+        color: #64748b;
+        border: 1px solid rgba(100, 116, 139, 0.12);
+    }
+</style>
+
+<div class="page-header-container" style="margin-bottom: 12px; margin-top: 5px;">
+    <span class="eyebrow-tag" style="background: rgba(0, 117, 74, 0.08); color: var(--sb-dark-green); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 8px;">AUDIT TRAIL</span>
+    <h1 class="page-title" style="font-size: 22px !important; margin: 0 0 2px 0 !important; line-height: 1.2; font-weight: 800; letter-spacing: -0.01em;">Nhật Ký Hệ Thống</h1>
+    <p class="page-description" style="margin: 0 !important; font-size: 13.5px !important; line-height: 1.2; color: var(--text-muted);">Xem và lọc lịch sử log ghi nhận hoạt động của hệ thống từ Serilog.</p>
+</div>
+
+<!-- Filters Bar - Double Bezel Card -->
+<div style="background: rgba(0, 0, 0, 0.015); padding: 4px; border-radius: 14px; border: 1px solid rgba(0, 0, 0, 0.03); margin-bottom: 12px;">
+    <div style="background: #ffffff; border-radius: 10px; padding: 12px 16px !important; border: 1px solid rgba(0, 0, 0, 0.045);">
+        <form method="get" asp-action="Index" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 200px; margin-bottom: 0 !important;">
+                <label style="font-size: 12px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 2px;">Từ khóa tìm kiếm</label>
+                <input type="text" name="search" value="@search" placeholder="Nhập từ khóa (ví dụ: CS101, CourseId, ...)" class="form-control compact-log-input" />
+            </div>
+
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; width: 140px; margin-bottom: 0 !important;">
+                <label style="font-size: 12px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 2px;">Cấp độ (LogLevel)</label>
+                <select name="level" class="form-control compact-log-select">
+                    <option value="">Tất cả</option>
+                    @foreach (var lvl in ViewBag.Levels as List<string> ?? new List<string>())
+                    {
+                        if (lvl == selectedLevel)
+                        {
+                            <option value="@lvl" selected>@lvl</option>
+                        }
+                        else
+                        {
+                            <option value="@lvl">@lvl</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; width: 160px; margin-bottom: 0 !important;">
+                <label style="font-size: 12px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 2px;">Chọn ngày</label>
+                <input type="date" name="date" value="@selectedDate" class="form-control compact-log-input" style="padding: 5px 10px !important;" />
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 0 !important;">
+                <button type="submit" class="btn" style="height: 38px; padding: 0 16px !important; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                    Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn btn-light" style="height: 38px; padding: 0 14px !important; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 13px;">
+                    Xóa bộ lọc
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Logs Data Table panel - Double Bezel with Scroll area -->
+<div class="log-panel-shell">
+    <div class="log-panel-core">
+        <div class="log-scroll-area">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th style="width: 180px;">Thời gian</th>
+                        <th style="width: 110px; text-align: center;">Cấp độ</th>
+                        <th>Nội dung chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" style="padding: 40px !important; text-align: center; color: var(--text-muted); background: #ffffff;">
+                                <span style="font-size: 32px; display: block; margin-bottom: 12px;">📑</span>
+                                Không tìm thấy log nào khớp với bộ lọc.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var entry in Model)
+                        {
+                            <tr>
+                                <td style="color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; padding: 10px 16px; white-space: nowrap;">
+                                    @entry.Timestamp.ToString("dd/MM/yyyy HH:mm:ss.fff")
+                                </td>
+                                <td style="padding: 10px 16px; text-align: center; white-space: nowrap;">
+                                    @if (entry.Level == "ERR")
+                                    {
+                                        <span class="log-badge log-badge-error">ERROR</span>
+                                    }
+                                    else if (entry.Level == "WRN")
+                                    {
+                                        <span class="log-badge log-badge-warning">WARNING</span>
+                                    }
+                                    else if (entry.Level == "DBG")
+                                    {
+                                        <span class="log-badge log-badge-debug">DEBUG</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="log-badge log-badge-info">INFO</span>
+                                    }
+                                </td>
+                                <td style="color: #334155; font-weight: 550; font-size: 12.5px; padding: 10px 16px; word-break: break-all; line-height: 1.4;">
+                                    @entry.Message
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

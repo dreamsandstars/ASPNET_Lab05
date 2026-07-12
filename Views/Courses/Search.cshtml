@@ -1,0 +1,120 @@
+@model IEnumerable<AspNetWeek3.Mvc.ViewModels.CourseListItemViewModel>
+
+@{
+    ViewData["Title"] = "Tìm kiếm & Lọc Khóa học";
+    var keyword = ViewBag.Keyword as string;
+    var seatStatus = ViewBag.SeatStatus as string;
+}
+
+<style>
+    .search-grid-form {
+        display: grid;
+        grid-template-columns: 2fr 1.5fr auto;
+        gap: 12px;
+        align-items: flex-end;
+    }
+    .filter-input-compact {
+        height: 38px !important;
+        padding: 6px 12px !important;
+        font-size: 13.5px !important;
+        border-radius: 6px !important;
+    }
+    .filter-btn-compact {
+        height: 38px !important;
+        padding: 0 16px !important;
+        font-size: 13.5px !important;
+        border-radius: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+    }
+    @@media (max-width: 768px) {
+        .search-grid-form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div style="margin-bottom: 16px; margin-top: 5px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 8px;">
+    <div>
+        <h1 class="page-title" style="font-size: 20px !important; margin: 0 0 2px 0 !important; line-height: 1.2;">Tìm kiếm Khóa học</h1>
+        <p class="page-description" style="margin: 0 !important; font-size: 12.5px !important; line-height: 1.2;">Tìm kiếm theo từ khóa và lọc theo tình trạng số chỗ còn lại.</p>
+    </div>
+</div>
+
+<div class="sb-card" style="margin-bottom: 20px; padding: 14px 16px !important;">
+    <form method="get" asp-controller="Courses" asp-action="Search" class="search-grid-form">
+        <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 0 !important;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 4px;">Từ khóa</label>
+            <input type="text" name="keyword" value="@keyword" placeholder="Nhập tên hoặc mã khóa học..." class="form-control filter-input-compact" />
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: column; margin-bottom: 0 !important;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--sb-dark-green); margin-bottom: 4px;">Tình trạng số chỗ</label>
+            <select name="seatStatus" class="form-control filter-input-compact" style="width: 100%; background: #ffffff; padding: 6px 24px 6px 10px !important;">
+                <option value="">-- Tất cả khóa học hoạt động --</option>
+                <!option value="low" @(seatStatus == "low" ? "selected" : "")>Sắp hết chỗ (Low Seats)</!option>
+                <!option value="available" @(seatStatus == "available" ? "selected" : "")>Còn chỗ thoải mái (Available)</!option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 8px; min-width: 160px; margin-bottom: 0 !important;">
+            <button type="submit" class="btn filter-btn-compact" style="flex: 1;">
+                Tìm kiếm
+            </button>
+            <a asp-controller="Courses" asp-action="Search" class="btn btn-light filter-btn-compact" style="flex: 1;">
+                Xóa lọc
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="results-container">
+    @if (!Model.Any())
+    {
+        <div style="background: var(--sb-white); border: 2px dashed var(--sb-ceramic); border-radius: 8px; padding: 40px 20px; text-align: center; color: var(--sb-text-black-soft); box-shadow: var(--shadow-card);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 38px; height: 38px; margin: 0 auto 10px auto; color: var(--sb-text-black-soft); opacity: 0.7;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+            </svg>
+            <p style="font-size: 15px; font-weight: 700; color: var(--sb-dark-green); margin: 0 0 2px 0;">Không tìm thấy khóa học nào phù hợp</p>
+            <p style="font-size: 13px; margin: 0;">Vui lòng thử điều chỉnh từ khóa hoặc điều kiện lọc số chỗ của bạn.</p>
+        </div>
+    }
+    else
+    {
+        <div class="courses-grid" style="gap: 16px !important;">
+            @foreach (var course in Model)
+            {
+                <div class="course-card-premium" style="padding: 16px !important; min-height: unset !important;">
+                    <div>
+                        <span class="category-tag" style="font-size: 1.1rem !important; padding: 2px 8px !important; margin-bottom: 6px !important;">
+                            @course.CategoryName
+                        </span>
+                        
+                        <h3 style="font-size: 15px !important; margin: 4px 0 6px 0 !important; font-weight: 700;">
+                            @if (!string.IsNullOrEmpty(course.CourseCode))
+                            {
+                                <span style="color: var(--sb-green); font-family: var(--font-mono); font-size: 15px; margin-right: 4px; font-weight: 700;">[@course.CourseCode]</span>
+                            }
+                            @course.Name
+                        </h3>
+                        
+                        <div class="price-display" style="font-size: 18px !important;">
+                            @course.Price.ToString("N0") <span style="font-size: 12px !important;">VND</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--sb-ceramic); display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+                        <span style="color: var(--sb-text-black-soft);">
+                            Còn lại: <strong style="color: @(course.IsLowSeats ? "var(--color-danger)" : "var(--sb-green)"); font-size: 14px;">@course.AvailableSeats</strong> chỗ trống
+                        </span>
+                        <a asp-action="Detail" asp-route-id="@course.Id" style="color: var(--sb-green); font-weight: 700; text-decoration: none;">
+                            Chi tiết &rarr;
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
